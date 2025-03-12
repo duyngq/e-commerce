@@ -1,4 +1,4 @@
-package com.store.model;
+package com.store.model.request;
 
 import lombok.Data;
 import lombok.Getter;

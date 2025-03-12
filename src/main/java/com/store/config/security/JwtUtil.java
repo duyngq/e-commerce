@@ -1,4 +1,4 @@
-package com.store.config;
+package com.store.config.security;
 
 import com.store.entity.Role;
 import io.jsonwebtoken.JwtException;

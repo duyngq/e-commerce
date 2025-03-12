@@ -1,10 +1,10 @@
 package com.store.service;
 
-import com.store.config.JwtUtil;
+import com.store.config.security.JwtUtil;
 import com.store.entity.Role;
 import com.store.entity.User;
-import com.store.model.AuthRequest;
-import com.store.model.UserRequest;
+import com.store.model.request.AuthRequest;
+import com.store.model.request.UserRequest;
 import com.store.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
