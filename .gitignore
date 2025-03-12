@@ -1,2 +1,5 @@
+.idea/
+*.iml
+
 # Ignore Maven target directory
 target/
