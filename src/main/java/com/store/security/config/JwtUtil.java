@@ -1,6 +1,6 @@
-package com.store.config.security;
+package com.store.security.config;
 
-import com.store.entity.Role;
+import com.store.security.entity.Role;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -1,6 +1,6 @@
-package com.store.repository;
+package com.store.security.repository;
 
-import com.store.entity.User;
+import com.store.security.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

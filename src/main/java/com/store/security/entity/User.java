@@ -1,4 +1,4 @@
-package com.store.entity;
+package com.store.security.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

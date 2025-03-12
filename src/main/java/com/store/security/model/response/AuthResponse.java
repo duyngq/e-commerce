@@ -1,4 +1,4 @@
-package com.store.model.response;
+package com.store.security.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

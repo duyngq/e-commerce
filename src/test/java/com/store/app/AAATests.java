@@ -1,9 +1,10 @@
 package com.store.app;
 
 import com.store.ElectronicStoreApplication;
-import com.store.entity.Role;
-import com.store.entity.User;
-import com.store.repository.UserRepository;
+import com.store.security.entity.Role;
+import com.store.security.entity.User;
+import com.store.security.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +37,16 @@ public class AAATests {
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAll(); // Clear database before each test
+        userRepository.deleteAll();
 
         // Insert test users into H2 in-memory database
         userRepository.save(new User(null, "admin", passwordEncoder.encode("admin123"), Role.ADMIN));
         userRepository.save(new User(null, "cust", passwordEncoder.encode("cust123"), Role.CUSTOMER));
+    }
+
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
     }
 
     @Test
@@ -74,7 +80,7 @@ public class AAATests {
     // Helper method to get JWT token for authentication
     private String getToken(String username, String password) throws Exception {
         String userJson = "{\"username\": \"" + username + "\",\"password\": \"" + password + "\"}";
-        String response = mockMvc.perform(post("/api/auth/login") // Adjust based on your auth endpoint
+        String response = mockMvc.perform(post("/api/auth/login")
                         .content(userJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -82,12 +88,12 @@ public class AAATests {
                 .getResponse()
                 .getContentAsString();
 
-        return response.replace("\"", ""); // Assuming token is returned as a simple JSON string
+        return response.replace("\"", "");
     }
 
     private String addUser(String username, String password, String role) throws Exception {
         String userJson = "{\"username\": \"" + username + "\",\"password\": \"" + password + "\",\"role\": \"" + role + "\"}";
-        String response = mockMvc.perform(post("/api/auth/register") // Adjust based on your auth endpoint
+        String response = mockMvc.perform(post("/api/auth/register")
                         .content(userJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -95,6 +101,6 @@ public class AAATests {
                 .getResponse()
                 .getContentAsString();
 
-        return response.replace("\"", ""); // Assuming token is returned as a simple JSON string
+        return response.replace("\"", "");
     }
 }
