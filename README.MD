@@ -54,7 +54,7 @@ mvn spring-boot:run
 **Request Body:**
 ```json
 {
-  "email": "user@example.com",
+  "username": "user@example.com",
   "password": "password123",
   "role": "CUSTOMER"
 }
