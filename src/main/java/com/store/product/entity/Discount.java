@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
@@ -24,5 +25,5 @@ public class Discount {
 
     private String type; // e.g., "BUY_ONE_GET_HALF_OFF"
     private int quantityRequired; // e.g., 1
-    private double discountPercentage; // e.g., 50%
+    private BigDecimal discountPercentage; // e.g., 50%
 }
