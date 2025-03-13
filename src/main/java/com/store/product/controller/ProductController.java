@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,8 +39,8 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/discount")
-    public ResponseEntity<List<ProductDiscountRequest>> addDiscount(@RequestBody List<ProductDiscountRequest> productDiscountRequest) {
-        return ResponseEntity.ok(productService.addDiscount(productDiscountRequest));
+    @PutMapping
+    public ResponseEntity<List<ProductDiscountRequest>> updateDiscount(@RequestBody List<ProductDiscountRequest> productDiscountRequest) {
+        return ResponseEntity.ok(productService.updateDiscount(productDiscountRequest));
     }
 }

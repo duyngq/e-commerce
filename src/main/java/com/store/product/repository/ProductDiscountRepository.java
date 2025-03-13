@@ -8,7 +8,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface ProductDiscountRepository extends JpaRepository<ProductDiscount, Long> {
+    List<ProductDiscount> findByProductIdIn(Set<Long> productIds);
 }
