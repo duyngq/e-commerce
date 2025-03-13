@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface DiscountRepository extends JpaRepository<Discount, Long> {
-    @Query("SELECT COUNT(p) FROM Product p WHERE p.id IN :ids")
-    long countByIdIn(@Param("ids") List<Long> ids);
+    @Query("SELECT COUNT(d) FROM Discount d WHERE d.id IN :ids")
+    long countByIdIn(@Param("ids") Set<Long> ids);
 }

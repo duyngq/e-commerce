@@ -15,5 +15,4 @@ public class DiscountRequest {
     private String type;
     private int quantityRequired;
     private double discountPercentage;
-    private Set<Long> productId;
 }

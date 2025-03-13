@@ -11,6 +11,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,6 @@ public interface ProductMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     @Mapping(target = "id", ignore = true) // ID is generated, so ignore it in requests
-//    @Mapping(target = "discounts", ignore = true) // Discounts are mapped separately
     Product toEntity(ProductRequest request);
 
     @Mapping(target = "discounts", source = "productDiscounts", qualifiedByName = "mapDiscounts")
@@ -28,6 +28,9 @@ public interface ProductMapper {
 
     @Named("mapDiscounts")
     default Set<DiscountResponse> mapDiscounts(Set<ProductDiscount> productDiscounts) {
+        if (productDiscounts == null) {
+            return Collections.emptySet();
+        }
         return productDiscounts.stream()
                 .map(pd -> new DiscountResponse(pd.getDiscount().getId(), pd.getDiscount().getType(), pd.getDiscount().getQuantityRequired(), pd.getDiscount().getDiscountPercentage()))
                 .collect(Collectors.toSet());

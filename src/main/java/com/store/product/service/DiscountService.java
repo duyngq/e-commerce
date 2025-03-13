@@ -1,19 +1,14 @@
 package com.store.product.service;
 
 import com.store.product.entity.Discount;
-import com.store.product.entity.Product;
-import com.store.product.model.mapper.DiscountMapper;
 import com.store.product.model.mapper.DiscountMapper;
 import com.store.product.model.request.DiscountRequest;
-import com.store.product.model.request.ProductRequest;
 import com.store.product.model.response.DiscountResponse;
-import com.store.product.model.response.ProductResponse;
 import com.store.product.repository.DiscountRepository;
-import com.store.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Set;
 
 @Service
 public class DiscountService {
@@ -22,7 +17,7 @@ public class DiscountService {
 
     private final DiscountMapper discountMapper;
 
-    private DiscountService(DiscountRepository discountRepository, DiscountMapper discountMapper) {
+    public DiscountService(DiscountRepository discountRepository, DiscountMapper discountMapper) {
         this.discountRepository = discountRepository;
         this.discountMapper = discountMapper;
     }
@@ -33,7 +28,7 @@ public class DiscountService {
         return discountMapper.toResponse(savedDiscount);
     }
 
-    public void remove(List<Long> ids) {
+    public void remove(Set<Long> ids) {
         long count = discountRepository.countByIdIn(ids);
         if (count != ids.size()) {
             throw new EntityNotFoundException("No all products found for the given IDs: " + ids);

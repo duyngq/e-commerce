@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -11,5 +12,5 @@ import java.util.Set;
 public class ProductRequest {
     private String name;
     private BigDecimal price;
-//    private Set<Long> discountIds; // Instead of actual Discount objects
+    private List<ProductDiscountRequest> discounts; // Instead of actual Discount objects
 }
