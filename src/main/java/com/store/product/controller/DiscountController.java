@@ -4,6 +4,7 @@ import com.store.product.model.request.DiscountRequest;
 import com.store.product.model.response.DiscountResponse;
 import com.store.product.service.impl.DiscountServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -36,6 +38,12 @@ public class DiscountController {
     @PostMapping
     public ResponseEntity<DiscountResponse> createDiscount(@RequestBody DiscountRequest discount) {
         return ResponseEntity.ok(discountService.createDiscount(discount));
+    }
+
+    @PostMapping("/bulk")
+    public ResponseEntity<List<DiscountResponse>> createDiscounts(@RequestBody List<DiscountRequest> discountRequests) {
+        List<DiscountResponse> createdDiscounts = discountService.createDiscounts(discountRequests);
+        return ResponseEntity.ok(createdDiscounts);
     }
 
     @DeleteMapping

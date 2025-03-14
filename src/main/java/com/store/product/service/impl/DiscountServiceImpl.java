@@ -9,7 +9,9 @@ import com.store.product.service.DiscountService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class DiscountServiceImpl implements DiscountService {
@@ -23,10 +25,24 @@ public class DiscountServiceImpl implements DiscountService {
         this.discountMapper = discountMapper;
     }
 
+    @Override
     public DiscountResponse createDiscount(DiscountRequest request) {
         Discount discount = discountMapper.toEntity(request);
         Discount savedDiscount = discountRepository.save(discount);
         return discountMapper.toResponse(savedDiscount);
+    }
+
+    @Override
+    public List<DiscountResponse> createDiscounts(List<DiscountRequest> requests) {
+        List<Discount> discounts = requests.stream()
+                .map(discountMapper::toEntity)
+                .collect(Collectors.toList());
+
+        discounts = discountRepository.saveAll(discounts);
+
+        return discounts.stream()
+                .map(discountMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     public void remove(Set<Long> ids) {

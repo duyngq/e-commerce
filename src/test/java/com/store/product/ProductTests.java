@@ -12,11 +12,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -27,10 +29,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)  // Allows non-static @BeforeAll
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProductTests extends BaseTest {
     @Autowired
     private ProductRepository productRepository;
+
     private Product savedProduct;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private String token;
@@ -43,8 +46,6 @@ public class ProductTests extends BaseTest {
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-        productRepository.deleteAll();
-        savedProduct = productRepository.save(new Product(null, "Laptop", new BigDecimal("1000.00"), new HashSet<>()));
     }
 
     @AfterEach
@@ -54,22 +55,22 @@ public class ProductTests extends BaseTest {
 
     @Test
     void testCreateProduct() throws Exception {
-        String productJson = "{\"name\": \"Phone\", \"price\": 500.00}";
+        String productJson = "{\"name\": \"iPhone\", \"price\": 500.00}";
 
         mockMvc.perform(post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productJson)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is("Phone")))
+                .andExpect(jsonPath("$.name", is("iPhone")))
                 .andExpect(jsonPath("$.price", is(500.00)));
 
         mockMvc.perform(get("/api/v1/products?page=0&size=10")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(2))) // Expecting only 2 products per page
-                .andExpect(jsonPath("$.totalElements").value(2)) // Total products in DB
-                .andExpect(jsonPath("$.totalPages").value(1)); // Expecting 2 pages
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1));
 
     }
 
@@ -85,7 +86,7 @@ public class ProductTests extends BaseTest {
     @Test
     void testUpdateProduct() throws Exception {
         String updatedJson = "{\"name\": \"Gaming Laptop\", \"price\": 1200.00}";
-
+        savedProduct = productRepository.save(new Product(null, "RAM", new BigDecimal("1000.00"), new HashSet<>()));
         mockMvc.perform(put("/api/v1/products/" + savedProduct.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedJson)
@@ -97,6 +98,8 @@ public class ProductTests extends BaseTest {
 
     @Test
     void testDeleteProduct() throws Exception {
+        savedProduct = productRepository.save(new Product(null, "RAM", new BigDecimal("1000.00"), new HashSet<>()));
+
         String deletedJson = "[" + savedProduct.getId() + "]";
         mockMvc.perform(delete("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -111,10 +114,12 @@ public class ProductTests extends BaseTest {
 
     @Test
     void getProductByValidId() throws Exception {
+        savedProduct = productRepository.save(new Product(null, "RAM", new BigDecimal("1000.00"), new HashSet<>()));
+
         mockMvc.perform(get("/api/v1/products/" + savedProduct.getId())
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Laptop"))
+                .andExpect(jsonPath("$.name").value("RAM"))
                 .andExpect(jsonPath("$.price").value(1000.00));
     }
 
@@ -133,6 +138,22 @@ public class ProductTests extends BaseTest {
                         .header("Authorization", "Bearer " + token)
                         .content(request))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Order(1)
+    void testUpdateProductWithDiscount() throws Exception {
+        String productDiscountJson = "[{\"productId\":1, \"discountId\":2},{\"productId\":2, \"discountId\":2},{\"productId\":3, \"discountId\":3}]";
+        mockMvc.perform(put("/api/v1/products/discounts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(productDiscountJson)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(2)))
+                .andExpect(jsonPath("$[0].productId", is(2)))
+                .andExpect(jsonPath("$[0].discountId", is(2)))
+                .andExpect(jsonPath("$[1].productId", is(3)))
+                .andExpect(jsonPath("$[1].discountId", is(3)));
     }
 /*
     @Test

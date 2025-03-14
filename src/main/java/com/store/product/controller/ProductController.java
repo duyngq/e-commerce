@@ -61,7 +61,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.updateProduct(id, productRequest));
     }
 
-    @PutMapping("/discount")
+    @PutMapping("/discounts")
     public ResponseEntity<List<ProductDiscountRequest>> updateDiscount(@RequestBody List<ProductDiscountRequest> productDiscountRequest) {
         return ResponseEntity.ok(productService.updateDiscount(productDiscountRequest));
     }

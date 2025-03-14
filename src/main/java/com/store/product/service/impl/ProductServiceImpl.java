@@ -1,6 +1,6 @@
 package com.store.product.service.impl;
 
-import com.store.exception.ResourceNotFoundException;
+import com.store.product.entity.Discount;
 import com.store.product.entity.Product;
 import com.store.product.entity.ProductDiscount;
 import com.store.product.model.mapper.DiscountMapper;
@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,22 +97,37 @@ public class ProductServiceImpl implements ProductService {
 
         Set<Long> discountIds = productDiscountRequest.stream().map(ProductDiscountRequest::getDiscountId).collect(Collectors.toSet());
         long discountCount = discountRepository.countByIdIn(discountIds);
-        if (discountCount != productIds.size()) {
+        if (discountCount != discountIds.size()) {
             throw new EntityNotFoundException("No all discounts found for the given IDs: " + discountIds);
         }
         // Get all discounts for the products from the database
         List<ProductDiscount> productDiscountsInDB = productDiscountRepository.findByProductIdIn(productIds);
 
-
         List<ProductDiscountRequest> updateProductDiscountList = new ArrayList<>();
         List<ProductDiscountRequest> deleteProductDiscountList = new ArrayList<>();
         separateToUpdateAndDeleteProductDiscounts(productDiscountRequest, productDiscountsInDB, updateProductDiscountList, deleteProductDiscountList);
         List<ProductDiscount> productDiscounts = new ArrayList<>();
+        Map<Long, Product> productsByIds = new HashMap<>();
+        Map<Long, Discount> discountsByIds = new HashMap<>();
+        if (!CollectionUtils.isEmpty(updateProductDiscountList) || !CollectionUtils.isEmpty(deleteProductDiscountList)) {
+            productsByIds = productRepository.findAllByIdIn(productIds).stream().collect(Collectors.toMap(entity -> entity.getId(), entity -> entity));
+            discountsByIds = discountRepository.findAllByIdIn(discountIds).stream().collect(Collectors.toMap(entity -> entity.getId(), entity -> entity));
+        }
         if (!CollectionUtils.isEmpty(updateProductDiscountList)) {
-            productDiscounts = productDiscountRepository.saveAll(productDiscountMapper.toEntityList(updateProductDiscountList));
+            productDiscounts = productDiscountRepository.saveAll(productDiscountMapper.toEntityList(updateProductDiscountList, productsByIds, discountsByIds));
         }
         if (!CollectionUtils.isEmpty(deleteProductDiscountList)) {
-            productDiscountRepository.deleteInBatch(productDiscountMapper.toEntityList(deleteProductDiscountList));
+            List<ProductDiscount> toDelete = new ArrayList<>();
+            for (ProductDiscountRequest req : deleteProductDiscountList) {
+                // find existing ProductDiscount from productDiscountsInDB
+                productDiscountsInDB.stream()
+                        .filter(pd -> pd.getProduct().getId().equals(req.getProductId())
+                                && pd.getDiscount().getId().equals(req.getDiscountId()))
+                        .findFirst()
+                        .ifPresent(toDelete::add);
+            }
+//            productDiscountRepository.deleteInBatch(productDiscountMapper.toEntityList(deleteProductDiscountList, productsByIds, discountsByIds));
+            productDiscountRepository.deleteInBatch(toDelete);
         }
         return productDiscounts.stream().map(productDiscountMapper::toResponse).collect(Collectors.toList());
     }

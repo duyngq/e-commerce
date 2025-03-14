@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@Sql(scripts = "/data-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         classes = ElectronicStoreApplication.class)
@@ -35,14 +34,10 @@ public class BaseTest {
 
     @BeforeEach
     protected void setUp() throws Exception {
-//        userRepository.deleteAll();
-//        userRepository.save(new User(null, "admin", passwordEncoder.encode("admin123"), Role.ADMIN));
-//        userRepository.save(new User(null, "cust", passwordEncoder.encode("cust123"), Role.CUSTOMER));
     }
 
     @AfterEach
     void tearDown() {
-//        userRepository.deleteAll();
     }
 
     protected String login(String username, String password) throws Exception {
