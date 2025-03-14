@@ -23,7 +23,7 @@ public interface ProductMapper {
     @Mapping(target = "id", ignore = true) // ID is generated, so ignore it in requests
     Product toEntity(ProductRequest request);
 
-    @Mapping(target = "discounts", source = "productDiscounts", qualifiedByName = "mapDiscounts")
+    @Mapping(target = "discounts", source = "discounts", qualifiedByName = "mapDiscounts")
     ProductResponse toResponse(Product product);
 
     @Named("mapDiscounts")

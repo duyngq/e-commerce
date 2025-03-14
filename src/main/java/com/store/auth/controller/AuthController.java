@@ -1,9 +1,9 @@
-package com.store.security.controller;
+package com.store.auth.controller;
 
-import com.store.security.model.request.AuthRequest;
-import com.store.security.model.response.AuthResponse;
-import com.store.security.model.request.UserRequest;
-import com.store.security.service.AuthService;
+import com.store.auth.model.request.AuthRequest;
+import com.store.auth.model.response.AuthResponse;
+import com.store.auth.model.request.UserRequest;
+import com.store.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

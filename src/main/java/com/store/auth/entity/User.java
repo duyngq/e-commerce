@@ -1,4 +1,4 @@
-package com.store.security.entity;
+package com.store.auth.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +33,8 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+//    @Column(nullable = false)
+//    private String role;
 
     // Constructors, Getters, Setters
 }

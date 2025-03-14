@@ -1,5 +1,6 @@
 package com.store.product.service.impl;
 
+import com.store.exception.ResourceNotFoundException;
 import com.store.product.entity.Product;
 import com.store.product.entity.ProductDiscount;
 import com.store.product.model.mapper.DiscountMapper;
@@ -67,6 +68,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductResponse updateProduct(long id, ProductRequest productRequest) {
+//        Product existingProduct = productRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
+
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + id));
+
+        // Update product fields
+        existingProduct.setName(productRequest.getName());
+        existingProduct.setPrice(productRequest.getPrice());
+
+        // Save updated product
+        Product updatedProduct = productRepository.save(existingProduct);
+
+        return productMapper.toResponse(updatedProduct);
+    }
+
+    @Override
     public List<ProductDiscountRequest> updateDiscount(List<ProductDiscountRequest> productDiscountRequest) {
         // filter to a list of product id and list of discount request
         Set<Long> productIds = productDiscountRequest.stream().map(ProductDiscountRequest::getProductId).collect(Collectors.toSet());
@@ -101,6 +120,15 @@ public class ProductServiceImpl implements ProductService {
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(pageable);
         return productPage.map(productMapper::toResponse);
+    }
+
+
+    @Override
+    public ProductResponse getProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+
+        return productMapper.toResponse(product);
     }
 
     private void separateToUpdateAndDeleteProductDiscounts(List<ProductDiscountRequest> productDiscountRequest, List<ProductDiscount> productDiscountsInDB, List<ProductDiscountRequest> updateProductDiscountList, List<ProductDiscountRequest> deleteProductDiscountList) {

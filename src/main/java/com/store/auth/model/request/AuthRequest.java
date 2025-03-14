@@ -1,4 +1,4 @@
-package com.store.security.model.request;
+package com.store.auth.model.request;
 
 import lombok.Data;
 import lombok.Getter;

@@ -2,11 +2,13 @@ package com.store.product.controller;
 
 import com.store.product.model.request.DiscountRequest;
 import com.store.product.model.response.DiscountResponse;
-import com.store.product.service.impl.DiscountService;
+import com.store.product.service.impl.DiscountServiceImpl;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +18,18 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/discount")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
 @SecurityRequirement(name = "bearerAuth")
 public class DiscountController {
-    private DiscountService discountService;
+    private DiscountServiceImpl discountService;
 
-    public DiscountController(DiscountService discountService) {
+    public DiscountController(DiscountServiceImpl discountService) {
         this.discountService = discountService;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DiscountResponse> getDiscount(@PathVariable Long discountId) {
+        return ResponseEntity.ok(discountService.getDiscount(discountId));
     }
 
     @PostMapping

@@ -1,4 +1,4 @@
-package com.store.security.config;
+package com.store.auth.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +22,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //TODO: update the following line to allow access to the /auth/** endpoint
                         .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/customer/**").hasRole("CUSTOMER")
+                        .requestMatchers("/api/v1/products/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/customers/**").hasAuthority("CUSTOMER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

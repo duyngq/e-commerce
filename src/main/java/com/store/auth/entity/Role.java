@@ -1,4 +1,4 @@
-package com.store.security.entity;
+package com.store.auth.entity;
 
 public enum Role {
     CUSTOMER,

@@ -1,6 +1,6 @@
 package com.store.exception.localization;
 
-import com.store.security.entity.User;
+import com.store.auth.entity.User;
 
 public class LocalizationExceptionDefinition {
     public static final String APP = "ElectronicStore";

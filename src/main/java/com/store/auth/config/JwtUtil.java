@@ -1,6 +1,6 @@
-package com.store.security.config;
+package com.store.auth.config;
 
-import com.store.security.entity.Role;
+import com.store.auth.entity.Role;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,16 +9,30 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
     private static final String SECRET_KEY = "E_Store_Application_With_SpringBoot_from_Scratch";
     private static final long EXPIRATION_TIME = 86400000; // 1 day in milliseconds
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-    public String generateToken(String username, Role role) {
+    /*public String generateToken(String username, Role role) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role.name())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }*/
+
+    public String generateToken(String username, Role role) {
+
+        return Jwts.builder()
+                .setSubject(username)
+//                .claim("role", role.name())
+                .setClaims(Map.of("role", role.name()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)

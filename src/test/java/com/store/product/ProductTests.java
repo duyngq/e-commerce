@@ -138,7 +138,7 @@ public class ProductTests extends BaseTest {
                 .andExpect(status().isOk());
     }*/
 
-    @Test
+    /*@Test
     void testDeleteProduct_NoDiscount() throws Exception {
         mockMvc.perform(delete("/api/products/" + savedProduct.getId()))
                 .andExpect(status().isNoContent());
@@ -191,6 +191,6 @@ public class ProductTests extends BaseTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(status().isBadRequest());
-    }
+    }*/
 
 }

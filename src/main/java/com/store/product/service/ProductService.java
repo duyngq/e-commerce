@@ -13,10 +13,13 @@ public interface ProductService {
 
     Page<ProductResponse> getAllProducts(Pageable pageable);
 
+    ProductResponse getProduct(Long id);
+
     List<ProductDiscountRequest> updateDiscount(List<ProductDiscountRequest> productDiscountRequest);
 
     void removeProduct(Set<Long> productIds);
 
     ProductResponse addProduct(ProductRequest productRequest);
 
+    ProductResponse updateProduct(long id, ProductRequest productRequest);
 }

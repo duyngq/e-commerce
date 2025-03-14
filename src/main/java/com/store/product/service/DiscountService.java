@@ -11,4 +11,6 @@ public interface DiscountService {
     DiscountResponse createDiscount(DiscountRequest request);
 
     void remove(Set<Long> ids);
+
+    DiscountResponse getDiscount(Long discountId);
 }

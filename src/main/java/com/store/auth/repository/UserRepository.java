@@ -1,6 +1,6 @@
-package com.store.security.repository;
+package com.store.auth.repository;
 
-import com.store.security.entity.User;
+import com.store.auth.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

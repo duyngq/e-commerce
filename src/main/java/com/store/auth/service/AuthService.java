@@ -1,17 +1,18 @@
-package com.store.security.service;
+package com.store.auth.service;
 
-import com.store.security.config.JwtUtil;
-import com.store.security.entity.Role;
-import com.store.security.entity.User;
-import com.store.security.model.request.AuthRequest;
-import com.store.security.model.request.UserRequest;
-import com.store.security.repository.UserRepository;
+import com.store.auth.config.JwtUtil;
+import com.store.auth.entity.Role;
+import com.store.auth.entity.User;
+import com.store.auth.model.request.AuthRequest;
+import com.store.auth.model.request.UserRequest;
+import com.store.auth.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+    public static final String ROLE_PREFIX = "ROLE_";
     private UserRepository userRepository;
 
     private JwtUtil jwtUtil;
@@ -30,6 +31,7 @@ public class AuthService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.valueOf(request.getRole().toUpperCase()));
+//        user.setRole(request.getRole().toUpperCase());
         userRepository.save(user);
         return "User registered successfully";
     }
