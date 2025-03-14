@@ -1,6 +1,5 @@
 package com.store.product.model.mapper;
 
-import com.store.product.entity.Discount;
 import com.store.product.entity.Product;
 import com.store.product.entity.ProductDiscount;
 import com.store.product.model.request.ProductRequest;
@@ -32,7 +31,7 @@ public interface ProductMapper {
             return Collections.emptySet();
         }
         return productDiscounts.stream()
-                .map(pd -> new DiscountResponse(pd.getDiscount().getId(), pd.getDiscount().getType(), pd.getDiscount().getQuantityRequired(), pd.getDiscount().getDiscountPercentage()))
+                .map(pd -> new DiscountResponse(pd.getDiscount().getId(), pd.getDiscount().getType(), pd.getDiscount().getQuantityRequired(), pd.getDiscount().getPercentage()))
                 .collect(Collectors.toSet());
     }
 

@@ -20,9 +20,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        //TODO: update the following line to allow access to the /auth/** endpoint
                         .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/api/v1/products/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/products/**", "/api/v1/discounts/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/v1/customers/**").hasAuthority("CUSTOMER")
                         .anyRequest().authenticated()
                 )

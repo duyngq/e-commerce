@@ -38,8 +38,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> resourceNotFoundException(EntityNotFoundException ex, WebRequest request) {
+    @ExceptionHandler(jakarta.persistence.EntityNotFoundException.class)
+    public ResponseEntity<?> resourceNotFoundException(jakarta.persistence.EntityNotFoundException ex, WebRequest request) {
         ExceptionDetails errorDetails = new ExceptionDetails(HttpStatus.NOT_FOUND.value(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }

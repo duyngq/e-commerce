@@ -13,4 +13,6 @@ public interface DiscountService {
     void remove(Set<Long> ids);
 
     DiscountResponse getDiscount(Long discountId);
+
+    DiscountResponse updateDiscount(Long id, DiscountRequest discountRequest);
 }

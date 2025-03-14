@@ -44,4 +44,20 @@ public class DiscountServiceImpl implements DiscountService {
 
         return discountMapper.toResponse(discount);
     }
+
+    @Override
+    public DiscountResponse updateDiscount(Long discountId, DiscountRequest discountRequest) {
+        Discount existingDiscount = discountRepository.findById(discountId)
+                .orElseThrow(() -> new EntityNotFoundException("Discount not found with id: " + discountId));
+
+        // Update discount details
+        existingDiscount.setPercentage(discountRequest.getPercentage());
+//        existingDiscount.setDescription(discountRequest.getDescription());
+//        existingDiscount.setExpiryDate(discountRequest.getExpiryDate());
+        existingDiscount.setQuantityRequired(discountRequest.getQuantityRequired());
+        existingDiscount.setType(discountRequest.getType());
+
+        Discount updatedDiscount = discountRepository.save(existingDiscount);
+        return discountMapper.toResponse(updatedDiscount);
+    }
 }

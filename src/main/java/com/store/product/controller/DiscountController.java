@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/v1/discount")
+@RequestMapping("/api/v1/discounts")
 @PreAuthorize("hasAuthority('ADMIN')")
 @SecurityRequirement(name = "bearerAuth")
 public class DiscountController {
@@ -28,8 +29,8 @@ public class DiscountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DiscountResponse> getDiscount(@PathVariable Long discountId) {
-        return ResponseEntity.ok(discountService.getDiscount(discountId));
+    public ResponseEntity<DiscountResponse> getDiscount(@PathVariable Long id) {
+        return ResponseEntity.ok(discountService.getDiscount(id));
     }
 
     @PostMapping
@@ -41,5 +42,10 @@ public class DiscountController {
     public ResponseEntity<Void> removeProducts(@RequestBody Set<Long> discountIds) {
         discountService.remove(discountIds);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DiscountResponse> updateDiscount(@PathVariable Long id, @RequestBody DiscountRequest discountRequest) {
+        return ResponseEntity.ok(discountService.updateDiscount(id, discountRequest));
     }
 }

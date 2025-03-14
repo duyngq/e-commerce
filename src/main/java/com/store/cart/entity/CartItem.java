@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,4 +35,11 @@ public class CartItem {
     @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
+
+    @Transient
+    public BigDecimal getSubTotal() {
+        BigDecimal unitPrice = product.getPrice();
+        BigDecimal quantity = BigDecimal.valueOf(getQuantity());
+        return unitPrice.multiply(quantity);
+    }
 }

@@ -36,9 +36,16 @@ public class AuthorizationTests extends BaseTest {
     }
 
     @Test
-    void testGetActionWithIncorrectRole() throws Exception {
+    void testGetProductWithIncorrectRole() throws Exception {
         mockMvc.perform(get("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void testGetDiscountWithIncorrectRole() throws Exception {
+        mockMvc.perform(get("/api/v1/discounts/1")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden());
     }

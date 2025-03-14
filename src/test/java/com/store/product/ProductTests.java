@@ -53,27 +53,6 @@ public class ProductTests extends BaseTest {
     }
 
     @Test
-    void testAddProduct() throws Exception {
-        ProductRequest productRequest = new ProductRequest();
-        productRequest.setName("Laptop");
-        productRequest.setPrice(BigDecimal.valueOf(1000));
-
-        String json = objectMapper.writeValueAsString(productRequest);
-        mockMvc.perform(post("/api/v1/products")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(get("/api/v1/products?page=0&size=10")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(2))) // Expecting only 2 products per page
-                .andExpect(jsonPath("$.totalElements").value(2)) // Total products in DB
-                .andExpect(jsonPath("$.totalPages").value(1)); // Expecting 2 pages
-    }
-
-    @Test
     void testCreateProduct() throws Exception {
         String productJson = "{\"name\": \"Phone\", \"price\": 500.00}";
 
@@ -84,6 +63,14 @@ public class ProductTests extends BaseTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("Phone")))
                 .andExpect(jsonPath("$.price", is(500.00)));
+
+        mockMvc.perform(get("/api/v1/products?page=0&size=10")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(2))) // Expecting only 2 products per page
+                .andExpect(jsonPath("$.totalElements").value(2)) // Total products in DB
+                .andExpect(jsonPath("$.totalPages").value(1)); // Expecting 2 pages
+
     }
 
     @Test
@@ -122,13 +109,32 @@ public class ProductTests extends BaseTest {
                 .andExpect(status().isNotFound());
     }
 
-    /*@Test
-    void getProductById_Valid() throws Exception {
-        mockMvc.perform(get("/api/products/" + savedProduct.getId()))
+    @Test
+    void getProductByValidId() throws Exception {
+        mockMvc.perform(get("/api/v1/products/" + savedProduct.getId())
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Laptop"));
+                .andExpect(jsonPath("$.name").value("Laptop"))
+                .andExpect(jsonPath("$.price").value(1000.00));
     }
 
+    @Test
+    void testGetProductById_NonExisting() throws Exception {
+        mockMvc.perform(get("/api/v1/products/999")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testUpdateProduct_NonExisting() throws Exception {
+        String request = "{\"name\":\"Updated\",\"price\":2000.00}";
+        mockMvc.perform(put("/api/v1/products/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + token)
+                        .content(request))
+                .andExpect(status().isNotFound());
+    }
+/*
     @Test
     void updateProduct_Valid() throws Exception {
         String request = "{\"name\":\"Updated Laptop\",\"price\":1800.00}";
@@ -153,20 +159,8 @@ public class ProductTests extends BaseTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    void testGetProductById_NonExisting() throws Exception {
-        mockMvc.perform(get("/api/products/999"))
-                .andExpect(status().isNotFound());
-    }
 
-    @Test
-    void testUpdateProduct_NonExisting() throws Exception {
-        String request = "{\"name\":\"Updated\",\"price\":2000.00}";
-        mockMvc.perform(put("/api/products/999")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(request))
-                .andExpect(status().isNotFound());
-    }
+
 
     @Test
     void testDeleteProduct_Bought() throws Exception {
