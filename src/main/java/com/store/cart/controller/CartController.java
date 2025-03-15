@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/cart")
 @PreAuthorize("hasRole('CUSTOMER')")
@@ -28,13 +30,23 @@ public class CartController {
         return ResponseEntity.ok(cartService.removeFromCart(request));
     }
 
-    // 🔹 View cart details
+    @PostMapping
+    public ResponseEntity<CartResponse> addProductsToCart(@RequestBody List<CartItemRequest> items) {
+        CartResponse updatedCart = cartService.addProductsToCart(items);
+        return ResponseEntity.ok(updatedCart);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<CartResponse> removeProductsFromCart(@RequestBody List<CartItemRequest> items) {
+        CartResponse updatedCart = cartService.removeProductsFromCart(items);
+        return ResponseEntity.ok(updatedCart);
+    }
+
     @GetMapping
     public ResponseEntity<CartResponse> viewCart() {
         return ResponseEntity.ok(cartService.getCart());
     }
 
-    // 🔹 Checkout: Calculate total price with discounts
     @PostMapping("/checkout")
     public ResponseEntity<CartResponse> checkout() {
         return ResponseEntity.ok(cartService.checkout());

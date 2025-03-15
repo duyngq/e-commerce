@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -109,6 +110,79 @@ public class CartServiceImpl implements CartService {
         cart.setTotalPrice(total);
         cartRepository.save(cart);
 
+        return cartMapper.toResponse(cart);
+    }
+
+    @Override
+    public CartResponse addProductsToCart(List<CartItemRequest> items) {
+        // 1) Fetch the user’s cart or create a new one
+        Cart cart = cartRepository.findByUser(getCurrentUser())
+                .orElse(new Cart());
+        cart.setUser(getCurrentUser());
+
+        // 2) For each item in the list, find the product & add/update quantity
+        for (CartItemRequest itemRequest : items) {
+            Product product = productRepository.findById(itemRequest.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found: " + itemRequest.getProductId()));
+
+            // Find existing item or create a new one
+            CartItem cartItem = cart.getItems().stream()
+                    .filter(ci -> ci.getProduct().equals(product))
+                    .findFirst()
+                    .orElse(new CartItem());
+            cartItem.setProduct(product);
+            cartItem.setCart(cart);
+
+            // Update quantity
+            cartItem.setQuantity(cartItem.getQuantity() + itemRequest.getQuantity());
+
+            // Ensure item is in cart’s item list
+            if (!cart.getItems().contains(cartItem)) {
+                cart.getItems().add(cartItem);
+            }
+        }
+
+        // 3) Save the cart
+        cartRepository.save(cart);
+
+        // 4) Return updated cart response
+        return cartMapper.toResponse(cart);
+    }
+
+    @Override
+    public CartResponse removeProductsFromCart(List<CartItemRequest> items) {
+        // 1) Fetch user's cart or throw an exception if not found
+        Cart cart = cartRepository.findByUser(getCurrentUser())
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        // 2) For each item in the list, reduce quantity or remove completely
+        for (CartItemRequest itemReq : items) {
+            Product product = productRepository.findById(itemReq.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Product not found: " + itemReq.getProductId()));
+
+            // Find the cart item that matches the product
+            CartItem existingItem = cart.getItems().stream()
+                    .filter(ci -> ci.getProduct().equals(product))
+                    .findFirst()
+                    .orElse(null);
+
+            if (existingItem != null) {
+                int newQuantity = existingItem.getQuantity() - itemReq.getQuantity();
+
+                if (newQuantity <= 0) {
+                    // If new quantity is zero or negative, remove the item entirely
+                    cart.getItems().remove(existingItem);
+                } else {
+                    // Otherwise, update the quantity
+                    existingItem.setQuantity(newQuantity);
+                }
+            }
+        }
+
+        // 3) Save the updated cart
+        cartRepository.save(cart);
+
+        // 4) Return the updated cart as a response
         return cartMapper.toResponse(cart);
     }
 
