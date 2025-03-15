@@ -25,8 +25,8 @@ public class DiscountTests extends BaseTest {
 
     @Autowired
     private DiscountRepository discountRepository;
-    private Discount savedDiscount;
     private String token;
+    private Long savedDiscountId;
 
     @BeforeAll
     void loginAndGetToken() throws Exception {
@@ -34,19 +34,23 @@ public class DiscountTests extends BaseTest {
     }
 
     @BeforeEach
-    public void setUp() {
-        discountRepository.deleteAll();
-        savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 50.00));
+    public void setUp() throws Exception {
+        super.setUp();
+//        discountRepository.deleteAll();
     }
 
     @AfterEach
     void tearDown() {
-        discountRepository.deleteAll();
+        if (savedDiscountId != null) {
+            discountRepository.deleteById(savedDiscountId);
+        }
     }
 
     @Test
     void testGetDiscount() throws Exception {
-        mockMvc.perform(get("/api/v1/discounts/" + savedDiscount.getId())
+        Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 50.00));
+        savedDiscountId = savedDiscount.getId();
+        mockMvc.perform(get("/api/v1/discounts/" + savedDiscountId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.size()", greaterThan(0))) // Ensure at least one discount exists
@@ -72,8 +76,10 @@ public class DiscountTests extends BaseTest {
 
     @Test
     void testUpdateDiscount() throws Exception {
+        Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 50.00));
+        savedDiscountId = savedDiscount.getId();
         String updateDiscountJson = "{\"type\": \"Buy 2 Get 1 Free\", \"quantityRequired\":10, \"percentage\": 33.33}";
-        mockMvc.perform(put("/api/v1/discounts/" + savedDiscount.getId())
+        mockMvc.perform(put("/api/v1/discounts/" + savedDiscountId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updateDiscountJson)
                         .header("Authorization", "Bearer " + token))
@@ -83,7 +89,7 @@ public class DiscountTests extends BaseTest {
                 .andExpect(jsonPath("$.quantityRequired", is(10)))
                 .andExpect(jsonPath("$.percentage", is(33.33)));
 
-        mockMvc.perform(get("/api/v1/discounts/" + savedDiscount.getId())
+        mockMvc.perform(get("/api/v1/discounts/" + savedDiscountId)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", greaterThan(0))) // Ensure at least one discount exists
@@ -94,14 +100,16 @@ public class DiscountTests extends BaseTest {
 
     @Test
     void testDeleteDiscount() throws Exception {
-        String deletedJson = "[" + savedDiscount.getId() + "]";
+        Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 50.00));
+        savedDiscountId = savedDiscount.getId();
+        String deletedJson = "[" + savedDiscountId + "]";
         mockMvc.perform(delete("/api/v1/discounts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(deletedJson)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/v1/discounts/" + savedDiscount.getId())
+        mockMvc.perform(get("/api/v1/discounts/" + savedDiscountId)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound());
     }

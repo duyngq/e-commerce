@@ -3,8 +3,6 @@ package com.store.product;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.store.BaseTest;
 import com.store.product.entity.Product;
-import com.store.product.entity.ProductDiscount;
-import com.store.product.model.request.ProductRequest;
 import com.store.product.repository.ProductRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,7 +16,6 @@ import org.springframework.http.MediaType;
 import java.math.BigDecimal;
 import java.util.HashSet;
 
-import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -34,9 +31,11 @@ public class ProductTests extends BaseTest {
     @Autowired
     private ProductRepository productRepository;
 
-    private Product savedProduct;
+    //    private Product savedProduct;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private String token;
+
+    private Long savedProductId;
 
     @BeforeAll
     void loginAndGetToken() throws Exception {
@@ -50,7 +49,9 @@ public class ProductTests extends BaseTest {
 
     @AfterEach
     void tearDown() {
-        productRepository.deleteAll();
+        if (savedProductId != null) {
+            productRepository.deleteById(savedProductId);
+        }
     }
 
     @Test
@@ -68,8 +69,8 @@ public class ProductTests extends BaseTest {
         mockMvc.perform(get("/api/v1/products?page=0&size=10")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(1)))
-                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content", hasSize(4)))
+                .andExpect(jsonPath("$.totalElements").value(4))
                 .andExpect(jsonPath("$.totalPages").value(1));
 
     }
@@ -86,8 +87,9 @@ public class ProductTests extends BaseTest {
     @Test
     void testUpdateProduct() throws Exception {
         String updatedJson = "{\"name\": \"Gaming Laptop\", \"price\": 1200.00}";
-        savedProduct = productRepository.save(new Product(null, "RAM", new BigDecimal("1000.00"), new HashSet<>()));
-        mockMvc.perform(put("/api/v1/products/" + savedProduct.getId())
+        Product savedProduct = productRepository.save(new Product(null, "RAM", new BigDecimal("1000.00"), new HashSet<>()));
+        savedProductId = savedProduct.getId();
+        mockMvc.perform(put("/api/v1/products/" + savedProductId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedJson)
                         .header("Authorization", "Bearer " + token))
@@ -98,25 +100,25 @@ public class ProductTests extends BaseTest {
 
     @Test
     void testDeleteProduct() throws Exception {
-        savedProduct = productRepository.save(new Product(null, "RAM", new BigDecimal("1000.00"), new HashSet<>()));
-
-        String deletedJson = "[" + savedProduct.getId() + "]";
+        Product savedProduct = productRepository.save(new Product(null, "RAM", new BigDecimal("1000.00"), new HashSet<>()));
+        savedProductId = savedProduct.getId();
+        String deletedJson = "[" + savedProductId + "]";
         mockMvc.perform(delete("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(deletedJson)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/api/v1/products/" + savedProduct.getId())
+        mockMvc.perform(get("/api/v1/products/" + savedProductId)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void getProductByValidId() throws Exception {
-        savedProduct = productRepository.save(new Product(null, "RAM", new BigDecimal("1000.00"), new HashSet<>()));
-
-        mockMvc.perform(get("/api/v1/products/" + savedProduct.getId())
+        Product savedProduct = productRepository.save(new Product(null, "RAM", new BigDecimal("1000.00"), new HashSet<>()));
+        savedProductId = savedProduct.getId();
+        mockMvc.perform(get("/api/v1/products/" + savedProductId)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("RAM"))
