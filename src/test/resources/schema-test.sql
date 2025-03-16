@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS product (
 CREATE TABLE IF NOT EXISTS discount (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   type VARCHAR(255) NOT NULL,
+  free_quantity INT NOT NULL,
   quantity_required INT NOT NULL,
   percentage DECIMAL(5,2) NOT NULL
 );

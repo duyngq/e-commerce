@@ -72,6 +72,7 @@ public class DiscountServiceImpl implements DiscountService {
 //        existingDiscount.setExpiryDate(discountRequest.getExpiryDate());
         existingDiscount.setQuantityRequired(discountRequest.getQuantityRequired());
         existingDiscount.setType(discountRequest.getType());
+        existingDiscount.setFreeQuantity(discountRequest.getFreeQuantity());
 
         Discount updatedDiscount = discountRepository.save(existingDiscount);
         return discountMapper.toResponse(updatedDiscount);

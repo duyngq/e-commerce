@@ -1,6 +1,7 @@
 package com.store.product.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,10 +26,10 @@ public class ProductDiscount {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(name = "FK_PRODUCT_DISCOUNT_PRODUCT"))
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "discount_id", nullable = false)
+    @JoinColumn(name = "discount_id", nullable = false, foreignKey = @ForeignKey(name = "FK_PRODUCT_DISCOUNT_DISCOUNT"))
     private Discount discount;
 }

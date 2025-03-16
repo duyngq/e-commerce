@@ -9,9 +9,9 @@ import com.store.cart.model.request.CartItemRequest;
 import com.store.cart.model.response.CartResponse;
 import com.store.cart.repository.CartRepository;
 import com.store.cart.service.CartService;
+import com.store.product.discount.DiscountRuleEngine;
 import com.store.product.entity.Discount;
 import com.store.product.entity.Product;
-import com.store.product.entity.ProductDiscount;
 import com.store.product.repository.DiscountRepository;
 import com.store.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,13 +36,19 @@ public class CartServiceImpl implements CartService {
     private final CartMapper cartMapper; // Use MapStruct to map DTOs
 
     private final UserRepository userRepository;
+
+
+    private final DiscountRuleEngine discountRuleEngine;
+
     public CartServiceImpl(CartRepository cartRepository, ProductRepository productRepository,
-                           DiscountRepository discountRepository, CartMapper cartMapper, UserRepository userRepository) {
+                           DiscountRepository discountRepository, CartMapper cartMapper, UserRepository userRepository,
+                           DiscountRuleEngine discountRuleEngine) {
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.discountRepository = discountRepository;
         this.cartMapper = cartMapper;
         this.userRepository = userRepository;
+        this.discountRuleEngine = discountRuleEngine;
     }
 
     @Override
@@ -86,15 +93,15 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponse checkout() {
-        Cart cart = cartRepository.findByUser(getCurrentUser())
+    public CartResponse checkout(Long cartId) {
+        Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
 
         BigDecimal total = BigDecimal.ZERO;
 
         for (CartItem item : cart.getItems()) {
             Product product = item.getProduct();
-            BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+            /*BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
 
             // Apply discount if exists
             if (!product.getDiscounts().isEmpty()) {
@@ -104,7 +111,15 @@ public class CartServiceImpl implements CartService {
             }
 
 //            item.setTotalPrice(itemTotal);
-            total = total.add(itemTotal);
+            total = total.add(itemTotal);*/
+
+
+            BigDecimal itemBasePrice = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+
+            // Let the rule engine apply the correct discount
+            BigDecimal discountedTotal = discountRuleEngine.applyDiscounts(item, itemBasePrice);
+
+            total = total.add(discountedTotal);
         }
 
         cart.setTotalPrice(total);
@@ -115,44 +130,48 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartResponse addProductsToCart(List<CartItemRequest> items) {
-        // 1) Fetch the user’s cart or create a new one
         Cart cart = cartRepository.findByUser(getCurrentUser())
                 .orElse(new Cart());
         cart.setUser(getCurrentUser());
 
-        // 2) For each item in the list, find the product & add/update quantity
+        BigDecimal total = BigDecimal.ZERO;
         for (CartItemRequest itemRequest : items) {
             Product product = productRepository.findById(itemRequest.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found: " + itemRequest.getProductId()));
 
+            List<CartItem> cartItemList = cart.getItems();
+            if (cartItemList == null) {
+                cartItemList = new ArrayList<>();
+                cart.setItems(cartItemList);
+            }
             // Find existing item or create a new one
-            CartItem cartItem = cart.getItems().stream()
-                    .filter(ci -> ci.getProduct().equals(product))
+            CartItem cartItem = cartItemList.stream()
+                    .filter(ci -> ci.getProduct() != null && ci.getProduct().equals(product))
                     .findFirst()
-                    .orElse(new CartItem());
-            cartItem.setProduct(product);
-            cartItem.setCart(cart);
+                    .orElse(CartItem.builder()
+                            .product(product)
+                            .quantity(0)
+                            .cart(cart)
+                            .build());
 
             // Update quantity
             cartItem.setQuantity(cartItem.getQuantity() + itemRequest.getQuantity());
 
             // Ensure item is in cart’s item list
-            if (!cart.getItems().contains(cartItem)) {
-                cart.getItems().add(cartItem);
+            if (!cartItemList.contains(cartItem)) {
+                cartItemList.add(cartItem);
             }
         }
 
-        // 3) Save the cart
         cartRepository.save(cart);
 
-        // 4) Return updated cart response
         return cartMapper.toResponse(cart);
     }
 
     @Override
-    public CartResponse removeProductsFromCart(List<CartItemRequest> items) {
+    public CartResponse removeProductsFromCart(Long cartId, List<CartItemRequest> items) {
         // 1) Fetch user's cart or throw an exception if not found
-        Cart cart = cartRepository.findByUser(getCurrentUser())
+        Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
         // 2) For each item in the list, reduce quantity or remove completely
@@ -178,7 +197,7 @@ public class CartServiceImpl implements CartService {
                 }
             }
         }
-
+        cart.setTotalPrice(BigDecimal.ZERO);
         // 3) Save the updated cart
         cartRepository.save(cart);
 

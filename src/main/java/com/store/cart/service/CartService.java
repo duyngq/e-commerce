@@ -1,6 +1,5 @@
 package com.store.cart.service;
 
-import com.store.cart.model.Receipt;
 import com.store.cart.model.request.CartItemRequest;
 import com.store.cart.model.response.CartResponse;
 
@@ -13,9 +12,9 @@ public interface CartService {
     CartResponse addToCart(CartItemRequest request);
     CartResponse removeFromCart(CartItemRequest request);
     CartResponse getCart();
-    CartResponse checkout();
+    CartResponse checkout(Long cartId);
 
     CartResponse addProductsToCart(List<CartItemRequest> items);
 
-    CartResponse removeProductsFromCart(List<CartItemRequest> items);
+    CartResponse removeProductsFromCart(Long cartId, List<CartItemRequest> items);
 }

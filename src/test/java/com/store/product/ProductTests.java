@@ -31,8 +31,6 @@ public class ProductTests extends BaseTest {
     @Autowired
     private ProductRepository productRepository;
 
-    //    private Product savedProduct;
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private String token;
 
     private Long savedProductId;
@@ -152,7 +150,7 @@ public class ProductTests extends BaseTest {
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(2)))
-                .andExpect(jsonPath("$[0].productId", is(2)))
+                .andExpect(jsonPath("$[0].productId", is(1)))
                 .andExpect(jsonPath("$[0].discountId", is(2)))
                 .andExpect(jsonPath("$[1].productId", is(3)))
                 .andExpect(jsonPath("$[1].discountId", is(3)));

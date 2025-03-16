@@ -36,7 +36,6 @@ public class DiscountTests extends BaseTest {
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
-//        discountRepository.deleteAll();
     }
 
     @AfterEach
@@ -48,7 +47,7 @@ public class DiscountTests extends BaseTest {
 
     @Test
     void testGetDiscount() throws Exception {
-        Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 50.00));
+        Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 1, 50.00));
         savedDiscountId = savedDiscount.getId();
         mockMvc.perform(get("/api/v1/discounts/" + savedDiscountId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -76,7 +75,7 @@ public class DiscountTests extends BaseTest {
 
     @Test
     void testUpdateDiscount() throws Exception {
-        Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 50.00));
+        Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 1, 50.00));
         savedDiscountId = savedDiscount.getId();
         String updateDiscountJson = "{\"type\": \"Buy 2 Get 1 Free\", \"quantityRequired\":10, \"percentage\": 33.33}";
         mockMvc.perform(put("/api/v1/discounts/" + savedDiscountId)
@@ -100,7 +99,7 @@ public class DiscountTests extends BaseTest {
 
     @Test
     void testDeleteDiscount() throws Exception {
-        Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 50.00));
+        Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 1, 50.00));
         savedDiscountId = savedDiscount.getId();
         String deletedJson = "[" + savedDiscountId + "]";
         mockMvc.perform(delete("/api/v1/discounts")

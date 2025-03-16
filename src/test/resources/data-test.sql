@@ -16,18 +16,18 @@ VALUES ('admin', '$2a$10$3j4gWBkKx9OHXp4c1O4auOQtF39c3aCtpRQisM9BzS1i4LENbKVkm',
 
 -- ========== Products ==========
 INSERT INTO product (name, price) VALUES
-('MacBook', 1200.00),
+('Macbook', 1200.00),
 ('Phone',  800.00),
 ('Tablet', 300.00);
 
 -- ========== Discounts ==========
-INSERT INTO discount (type, quantity_required, percentage) VALUES
-('Black Friday', 10, 20.00),
-('Summer Sale',  5, 10.00),
-('Buy 2 Get 1 Free', 20, 33.33);
+INSERT INTO discount (type, quantity_required, free_quantity, percentage) VALUES
+('BUY_N_GET_M_FREE', 10, 5, 20.00),
+('BUY_N_GET_PERCENT_OFF', 5, 0, 10.00),
+('BUY_N_GET_M_FREE', 20, 2, 33.33);
 
 -- ========== Product-Discount Relationships ==========
 INSERT INTO product_discount (product_id, discount_id) VALUES
-(1, 1),  -- Laptop -> Black Friday
-(1, 2),  -- Laptop -> Summer Sale
-(2, 3);  -- Phone -> Buy 2 Get 1 Free
+(1, 1),  -- Laptop -> BUY_N_GET_M_FREE
+(2, 2),  -- Laptop -> BUY_N_GET_PERCENT_OFF
+(3, 1);  -- Phone -> BUY_N_GET_M_FREE

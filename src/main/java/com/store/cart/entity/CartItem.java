@@ -1,8 +1,11 @@
 package com.store.cart.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.store.product.entity.Product;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -29,11 +33,13 @@ public class CartItem {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "FK_CART_ITEM_PRODUCT"))
     private Product product;
     private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
+    @ToString.Exclude
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", foreignKey = @ForeignKey(name = "FK_CART_ITEM_CART"))
     private Cart cart;
 
     @Transient
