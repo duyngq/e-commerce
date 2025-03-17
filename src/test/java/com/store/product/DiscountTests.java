@@ -74,6 +74,25 @@ public class DiscountTests extends BaseTest {
     }
 
     @Test
+    void testCreateDiscounts() throws Exception {
+        String discountJson = "[{\"type\": \"Buy 2 Get 1 Free\", \"percentage\": 33.33},{\"type\":\"BUY_N_GET_M_FREE\", \"quantityRequired\":10, \"freeQuantity\":5, \"percentage\": 20.00}]";
+
+        mockMvc.perform(post("/api/v1/discounts/bulk")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(discountJson)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", greaterThan(0)))
+                .andExpect(jsonPath("$[0].type", is("Buy 2 Get 1 Free")))
+                .andExpect(jsonPath("$[0].quantityRequired", is(0)))
+                .andExpect(jsonPath("$[0].percentage", is(33.33)))
+                .andExpect(jsonPath("$[1].type", is("BUY_N_GET_M_FREE")))
+                .andExpect(jsonPath("$[1].freeQuantity", is(5)))
+                .andExpect(jsonPath("$[1].quantityRequired", is(10)))
+                .andExpect(jsonPath("$[1].percentage", is(20.00)));
+    }
+
+    @Test
     void testUpdateDiscount() throws Exception {
         Discount savedDiscount = discountRepository.save(new Discount(null, "Buy 1 Get 50% Off", 2, 1, 50.00));
         savedDiscountId = savedDiscount.getId();

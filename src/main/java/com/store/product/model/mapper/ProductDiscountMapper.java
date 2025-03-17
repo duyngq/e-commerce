@@ -18,11 +18,6 @@ public interface ProductDiscountMapper {
 
     ProductDiscountMapper INSTANCE = Mappers.getMapper(ProductDiscountMapper.class);
 
-//    @Mapping(target = "id", ignore = true)
-//    @Mapping(target = "product", source = "productId", qualifiedByName = "mapProductIdToProduct")
-//    @Mapping(target = "discount", source = "discountId", qualifiedByName = "mapDiscountIdToDiscount")
-//    ProductDiscount toEntity(ProductDiscountRequest request);
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "product", source = "productId", qualifiedByName = "mapProductIdMapToProduct")
     @Mapping(target = "discount", source = "discountId", qualifiedByName = "mapDiscountIdMapToDiscount")

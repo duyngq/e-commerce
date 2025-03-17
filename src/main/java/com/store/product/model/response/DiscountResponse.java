@@ -13,5 +13,6 @@ public class DiscountResponse {
     private Long id;
     private String type;
     private int quantityRequired;
+    private int freeQuantity;
     private double percentage;
 }

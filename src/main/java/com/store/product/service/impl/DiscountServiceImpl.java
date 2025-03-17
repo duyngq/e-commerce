@@ -68,8 +68,6 @@ public class DiscountServiceImpl implements DiscountService {
 
         // Update discount details
         existingDiscount.setPercentage(discountRequest.getPercentage());
-//        existingDiscount.setDescription(discountRequest.getDescription());
-//        existingDiscount.setExpiryDate(discountRequest.getExpiryDate());
         existingDiscount.setQuantityRequired(discountRequest.getQuantityRequired());
         existingDiscount.setType(discountRequest.getType());
         existingDiscount.setFreeQuantity(discountRequest.getFreeQuantity());

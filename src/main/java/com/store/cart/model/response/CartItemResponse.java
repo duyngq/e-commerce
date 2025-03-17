@@ -12,5 +12,4 @@ import java.math.BigDecimal;
 public class CartItemResponse {
     private String productName;
     private int quantity;
-//    private BigDecimal totalPrice;
 }

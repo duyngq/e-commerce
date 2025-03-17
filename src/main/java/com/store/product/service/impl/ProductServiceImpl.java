@@ -70,9 +70,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse updateProduct(long id, ProductRequest productRequest) {
-//        Product existingProduct = productRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
-
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + id));
 
@@ -126,7 +123,6 @@ public class ProductServiceImpl implements ProductService {
                         .findFirst()
                         .ifPresent(toDelete::add);
             }
-//            productDiscountRepository.deleteInBatch(productDiscountMapper.toEntityList(deleteProductDiscountList, productsByIds, discountsByIds));
             productDiscountRepository.deleteInBatch(toDelete);
         }
         return productDiscounts.stream().map(productDiscountMapper::toResponse).collect(Collectors.toList());

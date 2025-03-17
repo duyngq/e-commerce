@@ -31,7 +31,7 @@ public interface ProductMapper {
             return Collections.emptySet();
         }
         return productDiscounts.stream()
-                .map(pd -> new DiscountResponse(pd.getDiscount().getId(), pd.getDiscount().getType(), pd.getDiscount().getQuantityRequired(), pd.getDiscount().getPercentage()))
+                .map(pd -> new DiscountResponse(pd.getDiscount().getId(), pd.getDiscount().getType(), pd.getDiscount().getQuantityRequired(),  pd.getDiscount().getFreeQuantity(), pd.getDiscount().getPercentage()))
                 .collect(Collectors.toSet());
     }
 

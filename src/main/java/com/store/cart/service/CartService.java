@@ -6,11 +6,6 @@ import com.store.cart.model.response.CartResponse;
 import java.util.List;
 
 public interface CartService {
-//    void addToCart(Long userId, Long productId, int quantity);
-//    Receipt calculateReceipt(Long userId);
-
-    CartResponse addToCart(CartItemRequest request);
-    CartResponse removeFromCart(CartItemRequest request);
     CartResponse getCart();
     CartResponse checkout(Long cartId);
 

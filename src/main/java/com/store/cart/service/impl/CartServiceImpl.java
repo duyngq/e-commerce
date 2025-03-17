@@ -24,19 +24,12 @@ import java.util.List;
 
 @Service
 public class CartServiceImpl implements CartService {
-//    @Autowired
-//    private CartRepository cartRepository;
-//
-//    @Autowired
-//    private ProductRepository productRepository;
-
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final DiscountRepository discountRepository;
     private final CartMapper cartMapper; // Use MapStruct to map DTOs
 
     private final UserRepository userRepository;
-
 
     private final DiscountRuleEngine discountRuleEngine;
 
@@ -49,39 +42,6 @@ public class CartServiceImpl implements CartService {
         this.cartMapper = cartMapper;
         this.userRepository = userRepository;
         this.discountRuleEngine = discountRuleEngine;
-    }
-
-    @Override
-    public CartResponse addToCart(CartItemRequest request) {
-        Cart cart = cartRepository.findByUser(getCurrentUser()).orElse(new Cart());
-        cart.setUser(getCurrentUser());
-
-        Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
-
-        CartItem cartItem = cart.getItems().stream()
-                .filter(item -> item.getProduct().equals(product))
-                .findFirst()
-                .orElse(new CartItem());
-
-        cartItem.setProduct(product);
-        cartItem.setCart(cart);
-        cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());
-        cart.getItems().add(cartItem);
-        cartRepository.save(cart);
-
-        return cartMapper.toResponse(cart);
-    }
-
-    @Override
-    public CartResponse removeFromCart(CartItemRequest request) {
-        Cart cart = cartRepository.findByUser(getCurrentUser())
-                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
-
-        cart.getItems().removeIf(item -> item.getProduct().getId().equals(request.getProductId()));
-
-        cartRepository.save(cart);
-        return cartMapper.toResponse(cart);
     }
 
     @Override
@@ -130,11 +90,8 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartResponse addProductsToCart(List<CartItemRequest> items) {
-        Cart cart = cartRepository.findByUser(getCurrentUser())
-                .orElse(new Cart());
-        cart.setUser(getCurrentUser());
+        Cart cart =Cart.builder().user(getCurrentUser()).totalPrice(BigDecimal.ZERO).build();
 
-        BigDecimal total = BigDecimal.ZERO;
         for (CartItemRequest itemRequest : items) {
             Product product = productRepository.findById(itemRequest.getProductId())
                     .orElseThrow(() -> new RuntimeException("Product not found: " + itemRequest.getProductId()));

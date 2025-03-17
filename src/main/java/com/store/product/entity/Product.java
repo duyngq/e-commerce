@@ -28,9 +28,6 @@ public class Product {
     private BigDecimal price;
 //    private boolean available; //TODO: Improve to have soft delete
 
-    //    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Discount> discounts;
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @OneToMany(mappedBy = "product")
     private Set<ProductDiscount> discounts;
 }

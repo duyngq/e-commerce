@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  mysql-db:
+    image: mysql:8
+    container_name: mysql-db
+#    command: --init-file /data/init_database.sql
+    environment:
+      - MYSQL_DATABASE=ecommerce_db
+      - MYSQL_USER=ecomuser
+      - MYSQL_PASSWORD=ecompass
+      - MYSQL_ROOT_PASSWORD=rootpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init-scripts:/docker-entrypoint-initdb.d
+
+  e-commerce:
+    build: .
+    # The Docker image name we’ll push to Docker Hub
+    image: duyngq/e-commerce:latest
+    container_name: e-commerce
+    depends_on:
+      - mysql-db
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - APP_MYSQL_SERVER=mysql-db
+      - APP_MYSQL_PORT=3306
+      - APP_MYSQL_DB=ecommerce_db
+      - APP_MYSQL_USERNAME=ecomuser
+      - APP_MYSQL_PASSWORD=ecompass
+      - APP_LOG_DIR=/e-commerce/logs
+
+volumes:
+  mysql_data:

@@ -30,20 +30,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-//    @Bean
-//    public AuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-//        provider.setUserDetailsService(userDetailsService());
-//        provider.setPasswordEncoder(new BCryptPasswordEncoder());
-//        return provider;
-//    }
-//
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return username -> userRepository.findByUsername(username)
-//                .map(user -> new User(user.getUsername(), user.getPassword(),
-//                        List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))))
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//    }
 }

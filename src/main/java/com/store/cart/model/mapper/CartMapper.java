@@ -22,7 +22,6 @@ public interface CartMapper {
     CartResponse toResponse(Cart cart);
 
     @Mapping(target = "productName", source = "product.name")
-//    @Mapping(target = "totalPrice", source = "totalPrice", qualifiedByName = "formatPrice")
     CartItemResponse toCartItemResponse(CartItem cartItem);
 
     default List<CartItemResponse> mapCartItems(List<CartItem> items) {

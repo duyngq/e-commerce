@@ -10,8 +10,6 @@ import java.util.Optional;
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByUserId(Long userId);
-//    @Query("SELECT COUNT(d) FROM Discount d WHERE d.id IN :ids")
-//    long countByIdIn(@Param("ids") Set<Long> ids);
 
     Optional<Cart> findByUser(User user);
 }
