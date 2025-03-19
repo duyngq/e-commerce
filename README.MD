@@ -53,6 +53,13 @@ mvn spring-boot:run
 ```sh
 docker-compose up
 ```
+##### Note
+- The application will be running on port 8080.
+- The database will be running on port 3306.
+- The database schema will be created automatically - make sure the folder structure like
+  - /mysql-init-scripts
+    - init_database.sql
+  - docker-compose.yml
 
 ### Access to Swagger API documentation
 ```sh
