@@ -37,19 +37,15 @@ Coverage report:
  - Using jacoco to generate code coverage report
 
 ### Running the Application
-##### Option 1: Run with maven command line
+##### Run with docker compose
 ```sh
-mvn spring-boot:run
-```
-##### Option 2: Run with docker
-```sh
-docker-compose up
+docker compose up
 ```
 ##### Note
 - The latest is pushed to docker hub under my account: duyngq/e-commerce
 - The application will be running on port 8080.
 - The database will be running on port 3306.
-- The database schema will be created automatically - make sure the folder structure like
+- The database schema will be created at boot - make sure the folder structure like
   - /mysql-init-scripts
     - init_database.sql
   - docker-compose.yml
