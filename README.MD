@@ -202,3 +202,4 @@ curl -X 'GET' \
 - [ ] Refactor the code to remove boilerplate code/structure in controller and service layers
 - [ ] Handle inventory management
 - [ ] Implement localization for exception messages
+- [ ] Enhance discount algorithm to support more complex scenarios and improve the performance 
