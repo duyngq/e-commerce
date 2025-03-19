@@ -1,7 +1,6 @@
 package com.store.cart.service.impl;
 
 import com.store.auth.entity.User;
-import com.store.auth.repository.UserRepository;
 import com.store.auth.service.AuthService;
 import com.store.cart.entity.Cart;
 import com.store.cart.entity.CartItem;
@@ -13,8 +12,6 @@ import com.store.cart.service.CartService;
 import com.store.product.discount.DiscountRuleEngine;
 import com.store.product.entity.Discount;
 import com.store.product.entity.Product;
-import com.store.product.repository.DiscountRepository;
-import com.store.product.repository.ProductRepository;
 import com.store.product.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
