@@ -208,7 +208,7 @@ public class CartTests extends BaseTest {
         // Assert the values of the first object
         CartItemResponse firstRemoval = removedaddedCardItemResponseList.get(0);
         assertEquals("Macbook", firstRemoval.getProductName());
-        assertEquals(9, firstRemoval.getQuantity());
+        assertEquals(6, firstRemoval.getQuantity());
 
         // Assert the values of the second object
         CartItemResponse secondRemoval = removedaddedCardItemResponseList.get(1);
@@ -230,13 +230,13 @@ public class CartTests extends BaseTest {
 
         // Assert the Cart
         assertEquals(2, checkoutRemovalResponse.getItems().size());
-        assertEquals(BigDecimal.valueOf(16240).setScale(2, BigDecimal.ROUND_HALF_UP), checkoutRemovalResponse.getTotalPrice());
+        assertEquals(BigDecimal.valueOf(12640).setScale(2, BigDecimal.ROUND_HALF_UP), checkoutRemovalResponse.getTotalPrice());
 
         List<CartItemResponse> checkoutRemovalCartItemResponseList = checkoutRemovalResponse.getItems();
         // Assert the values of the first object
         CartItemResponse firstRemovalItem = checkoutRemovalCartItemResponseList.get(0);
         assertEquals("Macbook", firstItem.getProductName());
-        assertEquals(9, firstRemovalItem.getQuantity());
+        assertEquals(6, firstRemovalItem.getQuantity());
 
         // Assert the values of the second object
         CartItemResponse secondRemovalItem = checkoutRemovalCartItemResponseList.get(1);

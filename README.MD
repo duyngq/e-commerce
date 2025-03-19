@@ -43,11 +43,7 @@ mvn clean install
 ```sh
 mvn test
 ```
-#### 4. Check test coverage
-```sh
-mvn jacoco:report
-```
-#### 5. Retrieve the test coverage report
+#### 4. Retrieve the test coverage report
 ```sh
 e-commerce\target\site\jacoco\index.html
 ```
@@ -204,3 +200,4 @@ curl -X 'GET' \
 - [ ] Implement refresh token feature
 - [ ] Implement the logging feature
 - [ ] Refactor the code to remove boilerplate code/structure in controller and service layers
+- [ ] Handle inventory management

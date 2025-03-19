@@ -16,7 +16,6 @@ import jakarta.persistence.Enumerated;
 
 @Entity
 @Table(name = "users")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -29,12 +28,8 @@ public class User {
     private String username;
 
     @Column(nullable = false)
-    private String password; // Will be stored as hashed
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
-//    @Column(nullable = false)
-//    private String role;
-
-    // Constructors, Getters, Setters
 }

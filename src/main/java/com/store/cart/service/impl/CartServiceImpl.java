@@ -113,7 +113,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponse removeProductsFromCart(Long cartId, List<CartItemRequest> items) {
+    public CartResponse updateProductsFromCart(Long cartId, List<CartItemRequest> items) {
         // 1) Fetch user's cart or throw an exception if not found
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
@@ -129,7 +129,7 @@ public class CartServiceImpl implements CartService {
                     .orElse(null);
 
             if (existingItem != null) {
-                int newQuantity = existingItem.getQuantity() - itemReq.getQuantity();
+                int newQuantity = itemReq.getQuantity();
 
                 if (newQuantity <= 0) {
                     // If new quantity is zero or negative, remove the item entirely

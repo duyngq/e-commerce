@@ -36,7 +36,7 @@ public class CartController {
     @Operation(summary = "Update product quantities in cart", description = "Returns the updated cart")
     @PutMapping("/{id}")
     public ResponseEntity<CartResponse> removeProductsFromCart(@PathVariable Long id, @RequestBody List<CartItemRequest> items) {
-        CartResponse updatedCart = cartService.removeProductsFromCart(id, items);
+        CartResponse updatedCart = cartService.updateProductsFromCart(id, items);
         return ResponseEntity.ok(updatedCart);
     }
 
