@@ -37,7 +37,7 @@ cd ecommerce
 ```
 #### 2. Build the project:
 ```sh
-mvn clean install
+mvn clean install -DskipTests
 ```
 #### 3. Execute the test cases:
 ```sh
@@ -48,7 +48,7 @@ mvn test
 e-commerce\target\site\jacoco\index.html
 ```
 Coverage report:
-![img.png](img.png)
+![unit_test_report.png](unit_test_report.png)
 
 #### 6. Test case implementation strategy
  - Start full application
@@ -196,7 +196,7 @@ curl -X 'GET' \
 - [x] Implement the cart management feature
 - [x] Implement the discount management feature
 
-#### TODO
+#### INCOMING
 - [ ] Implement refresh token feature
 - [ ] Implement the logging feature
 - [ ] Refactor the code to remove boilerplate code/structure in controller and service layers
