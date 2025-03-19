@@ -2,6 +2,7 @@ package com.store.cart.service.impl;
 
 import com.store.auth.entity.User;
 import com.store.auth.repository.UserRepository;
+import com.store.auth.service.AuthService;
 import com.store.cart.entity.Cart;
 import com.store.cart.entity.CartItem;
 import com.store.cart.model.mapper.CartMapper;
@@ -14,6 +15,7 @@ import com.store.product.entity.Discount;
 import com.store.product.entity.Product;
 import com.store.product.repository.DiscountRepository;
 import com.store.product.repository.ProductRepository;
+import com.store.product.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,22 +27,20 @@ import java.util.List;
 @Service
 public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
-    private final ProductRepository productRepository;
-    private final DiscountRepository discountRepository;
+    private final ProductService productService;
     private final CartMapper cartMapper; // Use MapStruct to map DTOs
 
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
     private final DiscountRuleEngine discountRuleEngine;
 
-    public CartServiceImpl(CartRepository cartRepository, ProductRepository productRepository,
-                           DiscountRepository discountRepository, CartMapper cartMapper, UserRepository userRepository,
+    public CartServiceImpl(CartRepository cartRepository, ProductService productService,
+                           CartMapper cartMapper, AuthService authService,
                            DiscountRuleEngine discountRuleEngine) {
         this.cartRepository = cartRepository;
-        this.productRepository = productRepository;
-        this.discountRepository = discountRepository;
+        this.productService = productService;
         this.cartMapper = cartMapper;
-        this.userRepository = userRepository;
+        this.authService = authService;
         this.discountRuleEngine = discountRuleEngine;
     }
 
@@ -81,8 +81,7 @@ public class CartServiceImpl implements CartService {
         Cart cart =Cart.builder().user(getCurrentUser()).totalPrice(BigDecimal.ZERO).build();
 
         for (CartItemRequest itemRequest : items) {
-            Product product = productRepository.findById(itemRequest.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found: " + itemRequest.getProductId()));
+            Product product = productService.getProductEntity(itemRequest.getProductId());
 
             List<CartItem> cartItemList = cart.getItems();
             if (cartItemList == null) {
@@ -121,8 +120,7 @@ public class CartServiceImpl implements CartService {
 
         // 2) For each item in the list, reduce quantity or remove completely
         for (CartItemRequest itemReq : items) {
-            Product product = productRepository.findById(itemReq.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Product not found: " + itemReq.getProductId()));
+            Product product = productService.getProductEntity(itemReq.getProductId());
 
             // Find the cart item that matches the product
             CartItem existingItem = cart.getItems().stream()
@@ -170,7 +168,6 @@ public class CartServiceImpl implements CartService {
 
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        return authService.findByUsername(username);
     }
 }

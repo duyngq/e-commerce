@@ -143,6 +143,12 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toResponse(product);
     }
 
+    @Override
+    public Product getProductEntity(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+    }
+
     private void separateToUpdateAndDeleteProductDiscounts(List<ProductDiscountRequest> productDiscountRequest, List<ProductDiscount> productDiscountsInDB, List<ProductDiscountRequest> updateProductDiscountList, List<ProductDiscountRequest> deleteProductDiscountList) {
         // Convert existing discounts to a map of productId to set of discountIds
         Map<Long, Set<Long>> discountsInDBMap = productDiscountsInDB.stream().collect(Collectors.groupingBy(pd -> pd.getProduct().getId(), Collectors.mapping(pd -> pd.getDiscount().getId(), Collectors.toSet())));

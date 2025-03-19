@@ -1,5 +1,6 @@
 package com.store.product.service;
 
+import com.store.product.entity.Product;
 import com.store.product.model.request.ProductDiscountRequest;
 import com.store.product.model.request.ProductRequest;
 import com.store.product.model.response.ProductResponse;
@@ -22,4 +23,6 @@ public interface ProductService {
     ProductResponse addProduct(ProductRequest productRequest);
 
     ProductResponse updateProduct(long id, ProductRequest productRequest);
+
+    Product getProductEntity(Long id);
 }
