@@ -70,6 +70,7 @@ mvn spring-boot:run
 docker-compose up
 ```
 ##### Note
+- The latest is pushed to docker hub under my account: duyngq/e-commerce
 - The application will be running on port 8080.
 - The database will be running on port 3306.
 - The database schema will be created automatically - make sure the folder structure like
