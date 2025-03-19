@@ -57,6 +57,11 @@ http://localhost:8080/swagger-ui/index.html
 
 ### Consume some API endpoints
 #### Authentication
+- User list
+```sh
+Admin role: admin/admin123
+Customer role: customer/cust123
+```
 - Login
  ```sh
   curl -X 'POST' \
