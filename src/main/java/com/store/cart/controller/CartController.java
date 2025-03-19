@@ -3,6 +3,8 @@ package com.store.cart.controller;
 import com.store.cart.model.request.CartItemRequest;
 import com.store.cart.model.response.CartResponse;
 import com.store.cart.service.CartService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/cart")
 @PreAuthorize("hasRole('CUSTOMER')")
+@Tag(name = "Cart Endpoints")
 public class CartController {
 
     @Autowired
@@ -30,15 +33,16 @@ public class CartController {
         return ResponseEntity.ok(addedCart);
     }
 
+    @Operation(summary = "Update product quantities in cart", description = "Returns the updated cart")
     @PutMapping("/{id}")
     public ResponseEntity<CartResponse> removeProductsFromCart(@PathVariable Long id, @RequestBody List<CartItemRequest> items) {
         CartResponse updatedCart = cartService.removeProductsFromCart(id, items);
         return ResponseEntity.ok(updatedCart);
     }
 
-    @GetMapping
-    public ResponseEntity<CartResponse> viewCart() {
-        return ResponseEntity.ok(cartService.getCart());
+    @GetMapping("/{id}")
+    public ResponseEntity<CartResponse> viewCart(@PathVariable Long id) {
+        return ResponseEntity.ok(cartService.getCart(id));
     }
 
     @GetMapping("/checkout/{id}")

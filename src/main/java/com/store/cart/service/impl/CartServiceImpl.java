@@ -45,8 +45,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartResponse getCart() {
-        Cart cart = cartRepository.findByUser(getCurrentUser())
+    public CartResponse getCart(Long cartId) {
+        Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
 
         return cartMapper.toResponse(cart);
@@ -61,18 +61,6 @@ public class CartServiceImpl implements CartService {
 
         for (CartItem item : cart.getItems()) {
             Product product = item.getProduct();
-            /*BigDecimal itemTotal = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-
-            // Apply discount if exists
-            if (!product.getDiscounts().isEmpty()) {
-                for (ProductDiscount pd : product.getDiscounts()) {
-                    itemTotal = applyDiscount(itemTotal, pd.getDiscount());
-                }
-            }
-
-//            item.setTotalPrice(itemTotal);
-            total = total.add(itemTotal);*/
-
 
             BigDecimal itemBasePrice = product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
 
@@ -152,6 +140,17 @@ public class CartServiceImpl implements CartService {
                     // Otherwise, update the quantity
                     existingItem.setQuantity(newQuantity);
                 }
+            } else {
+                CartItem newCartItem = CartItem.builder()
+                        .product(product)
+                        .quantity(itemReq.getQuantity())
+                        .cart(cart)
+                        .build();
+
+                // Ensure item is in cart’s item list
+                if (!cart.getItems().contains(newCartItem)) {
+                    cart.getItems().add(newCartItem);
+                }
             }
         }
         cart.setTotalPrice(BigDecimal.ZERO);
@@ -174,42 +173,4 @@ public class CartServiceImpl implements CartService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
-    /*@Override
-    public void addToCart(Long userId, Long productId, int quantity) {
-        Cart cart = cartRepository.findByUserId(userId).orElse(new Cart(null, new ArrayList<>(), new User()));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        CartItem item = new CartItem();
-        item.setProduct(product);
-        item.setQuantity(quantity);
-        cart.getCartItems().add(item);
-
-        cartRepository.save(cart);
-    }
-
-    @Override
-    public Receipt calculateReceipt(Long userId) {
-        Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
-
-        BigDecimal totalPrice = BigDecimal.ZERO;
-
-        for (CartItem item : cart.getCartItems()) {
-            BigDecimal itemPrice = item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-
-            // Apply discounts if available
-            for (ProductDiscount discount : item.getProduct().getDiscounts()) {
-                if (item.getQuantity() >= discount.getDiscount().getQuantityRequired()) {
-                    BigDecimal discountAmount = item.getProduct().getPrice()
-                            .multiply(discount.getDiscount().getDiscountPercentage());
-                    itemPrice = itemPrice.subtract(discountAmount);
-                }
-            }
-
-            totalPrice = totalPrice.add(itemPrice);
-        }
-
-        return new Receipt(cart.getCartItems(), totalPrice);
-    }*/
 }

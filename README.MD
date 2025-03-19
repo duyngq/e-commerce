@@ -28,40 +28,143 @@ This project is the Java backend for a web-based electronics store’s checkout 
 - Maven
 - Docker (Optional for containerization)
 
-### Installation & Running
+### Installation
 
 #### 1. Clone the repository:
 ```sh
-git clone https://github.com/your-repo/ecommerce-backend.git
-cd ecommerce-backend
+git clone https://github.com/duyngq/e-commerce.git
+cd ecommerce
 ```
 #### 2. Build the project:
 ```sh
 mvn clean install
 ```
-#### 3. Run the application:
+#### 3. Execute the test case:
+```sh
+mvn test
+```
+
+### Running the Application
+##### Option 1: Run with maven command line
 ```sh
 mvn spring-boot:run
 ```
-## API Endpoints
-
-### Authentication
-
-#### Register a New User
-**Endpoint:**  
-`POST /api/auth/register`  
-
-**Request Body:**
-```json
-{
-  "username": "user@example.com",
-  "password": "password123",
-  "role": "CUSTOMER"
-}
+##### Option 2: Run with docker
+```sh
+docker-compose up
 ```
-**Response:**
-```json
+
+### Access to Swagger API documentation
+```sh
+http://localhost:8080/swagger-ui/index.html
+```
+
+### Consume some API endpoints
+#### Authentication
+- Login
+ ```sh
+  curl -X 'POST' \
+  'http://localhost:8080/api/auth/login' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "username": "admin",
+  "password": "admin123"
+  }'
+```
+
+- Register a new user
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/api/auth/register' \
+  -H 'accept: */*' \  
+  -H 'Content-Type: application/json' \
+  -d '{
+  "username": "admin1",
+  "password": "admin1234",
+  "role": "ADMIN"
+  }'
+```
+#### Product
+- Create a new product
+```sh
+  curl -X 'POST' \
+  'http://localhost:8080/api/v1/products' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer <Token>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "prod1",
+  "price": 123,
+  "discounts": [
+  ]
+  }'
+  ```
+- Update discount for products
+```sh
+  curl -X 'PUT' \
+  'http://localhost:8080/api/v1/products/discounts' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer <Token>' \
+  -H 'Content-Type: application/json' \
+  -d '[
+  {
+  "productId": 1,
+  "discountId": 2
+  },
+ {
+  "productId": 2,
+  "discountId": 2
+  }
+  ]'
+  ```
+- Delete products
+```sh
+curl --location --request DELETE 'http://localhost:8080/api/v1/products' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer <Token>' \
+  --data '[
+  1,2,4
+  ]'
+```
+
+#### Cart
+- Add product to cart
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/api/v1/cart' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer <Token>' \
+  -H 'Content-Type: application/json' \
+  -d '[
+  {
+    "productId": 1,
+    "quantity": 1
+  }
+]'
+```
+- Update product quantity in cart
+```sh
+curl -X 'PUT' \
+  'http://localhost:8080/api/v1/cart/1' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer <Token>' \
+  -H 'Content-Type: application/json' \
+  -d '[
+  {
+    "productId": 1,
+    "quantity": 10
+  },
 {
-  "message": "User registered successfully"
-}
+    "productId": 2,
+    "quantity": 10
+  }
+]'
+```
+- Checkout cart
+```sh
+curl -X 'GET' \
+  'http://localhost:8080/api/v1/cart/checkout/<cartId>' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer <Token>'
 ```
