@@ -196,8 +196,9 @@ curl -X 'GET' \
 - [x] Implement the cart management feature
 - [x] Implement the discount management feature
 
-#### INCOMING
+#### TODO
 - [ ] Implement refresh token feature
 - [ ] Implement the logging feature
 - [ ] Refactor the code to remove boilerplate code/structure in controller and service layers
 - [ ] Handle inventory management
+- [ ] Implement localization for exception messages
