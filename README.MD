@@ -39,10 +39,26 @@ cd ecommerce
 ```sh
 mvn clean install
 ```
-#### 3. Execute the test case:
+#### 3. Execute the test cases:
 ```sh
 mvn test
 ```
+#### 4. Check test coverage
+```sh
+mvn jacoco:report
+```
+#### 5. Retrieve the test coverage report
+```sh
+e-commerce\target\site\jacoco\index.html
+```
+Coverage report:
+![img.png](img.png)
+
+#### 6. Test case implementation strategy
+ - Start full application
+ - Start in-memory database (H2 in this case)
+ - Run test cases with mockmvc to send request to the application as real client
+ - Using jacoco to generate code coverage report
 
 ### Running the Application
 ##### Option 1: Run with maven command line
@@ -175,3 +191,15 @@ curl -X 'GET' \
   -H 'accept: */*' \
   -H 'Authorization: Bearer <Token>'
 ```
+
+#### Feature list
+#### DONE
+- [x] Implement the authentication feature
+- [x] Implement the product management feature
+- [x] Implement the cart management feature
+- [x] Implement the discount management feature
+
+#### TODO
+- [ ] Implement refresh token feature
+- [ ] Implement the logging feature
+- [ ] Refactor the code to remove boilerplate code/structure in controller and service layers
