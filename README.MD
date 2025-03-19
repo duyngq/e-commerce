@@ -1,32 +1,12 @@
 # E-Commerce Backend
 
 This project is the Java backend for a web-based electronics store’s checkout system. It provides a **RESTful API** for managing authentication, products, and customer operations.
-
-## Milestone 1: Authentication
-
-### Features:
-- **User Registration** (Admin & Customer roles)
-- **Login & JWT Authentication**
-- **Role-Based Access Control (RBAC)**
-- **Spring Security with JWT tokens**
-- **Token Expiry & Refresh Mechanism**
-
-### Tech Stack:
-- **Spring Boot 3** (Backend Framework)
-- **Spring Security** (Authentication & Authorization)
-- **JWT (JSON Web Tokens)** (Token-based authentication)
-- **MySQL Database** (In-memory database for development/testing)
-- **Maven** (Build Tool)
-- **Docker** (For containerization) - TBC
-
----
-
 ## Getting Started
 
 ### Prerequisites
 - Java 17+
 - Maven
-- Docker (Optional for containerization)
+- Docker
 
 ### Installation
 
